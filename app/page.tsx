@@ -7,12 +7,21 @@ export default function Page() {
   const [datos, setDatos] = useState<any[]>([])
   const [grupo, setGrupo] = useState('Cumples del grupo')
 
-  const parseFecha = (fecha: string) => {
-    try {
-      return parse(fecha, 'dd/MM/yyyy', new Date())
-    } catch {
-      return new Date('2100-01-01') // Para ignorar fechas inválidas
+  const parseFecha = (fecha: any) => {
+    if (typeof fecha === 'string') {
+      try {
+        return parse(fecha, 'dd/MM/yyyy', new Date())
+      } catch {
+        return new Date('2100-01-01')
+      }
     }
+
+    if (typeof fecha === 'number') {
+      const epoch = new Date(1899, 11, 30)
+      return new Date(epoch.getTime() + fecha * 24 * 60 * 60 * 1000)
+    }
+
+    return new Date('2100-01-01')
   }
 
   useEffect(() => {
