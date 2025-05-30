@@ -10,7 +10,7 @@ export default function Page() {
   const parseFecha = (fecha: any) => {
     if (typeof fecha === 'string') {
       try {
-        return parse(fecha, 'dd/MM/yyyy', new Date())
+        return parse(fecha, 'd/M/yyyy', new Date())
       } catch {
         return new Date('2100-01-01')
       }
@@ -18,7 +18,7 @@ export default function Page() {
 
     if (typeof fecha === 'number') {
       const epoch = new Date(1899, 11, 30)
-      return new Date(epoch.getTime() + fecha * 24 * 60 * 60 * 1000)
+      return new Date(epoch.getTime() + fecha * 86400000)
     }
 
     return new Date('2100-01-01')
