@@ -36,10 +36,10 @@ export default function Home() {
       const nuevosCumples: Cumple[] = []
 
       datos.forEach((fila: any) => {
-        const nombre = fila['nombre completo']?.trim()
-        const fechaTexto = fila['fecha de cumpleaños']?.trim()
-        const instagram = fila['instagram u otra red social (opcional)']?.trim()
-        const celular = fila['número de celular (opcional)']?.toString().trim()
+        const nombre = fila['Nombre completo']?.trim()
+        const fechaTexto = fila['Fecha de cumpleaños']?.trim()
+        const instagram = fila['Instagram u otra red social (opcional)']?.trim()
+        const celular = fila['Número de celular (opcional)']?.toString().trim()
 
         const fecha = parseFecha(fechaTexto)
 
@@ -61,9 +61,7 @@ export default function Home() {
       const hoy = new Date()
       const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate())
 
-      const hoyCumple = nuevosCumples.filter(c => {
-        return isToday(c.fecha)
-      })
+      const hoyCumple = nuevosCumples.filter(c => isToday(c.fecha))
 
       const futuros = nuevosCumples
         .filter(c => {
@@ -93,39 +91,46 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen p-6 bg-white text-black">
-      <h1 className="text-2xl font-bold mb-4">{grupo}</h1>
+    <main className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 text-gray-800 p-6">
+      <div className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
+        <h1 className="text-3xl font-bold text-center mb-6">{grupo}</h1>
 
-      {cumplesHoy.length > 0 && (
-        <>
-          <h2 className="text-xl font-semibold mb-2">🎉 Cumpleaños de hoy</h2>
-          <ul className="mb-6">
-            {cumplesHoy.map((c, i) => (
-              <li key={i} className="mb-2">
-                <strong>{c.nombre}</strong> – {format(c.fecha, 'dd/MM', { locale: es })}
-              </li>
-            ))}
+        {cumplesHoy.length > 0 && (
+          <section className="mb-6">
+            <h2 className="text-xl font-semibold mb-2 text-center">🎉 Cumpleaños de hoy</h2>
+            <ul className="list-disc pl-6">
+              {cumplesHoy.map((c, i) => (
+                <li key={i} className="mb-1">
+                  <strong>{c.nombre}</strong> – {format(c.fecha, 'dd/MM', { locale: es })}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className="mb-6">
+          <h2 className="text-xl font-semibold mb-2 text-center">🔜 Próximos cumpleaños</h2>
+          <ul className="list-disc pl-6">
+            {cumplesFuturos.length > 0 ? (
+              cumplesFuturos.map((c, i) => (
+                <li key={i} className="mb-1">
+                  <strong>{c.nombre}</strong> – {format(c.fecha, 'dd/MM', { locale: es })}
+                </li>
+              ))
+            ) : (
+              <li className="text-center text-gray-500">No hay próximos cumpleaños cargados.</li>
+            )}
           </ul>
-        </>
-      )}
+        </section>
 
-      <h2 className="text-xl font-semibold mb-2">🔜 Próximos cumpleaños</h2>
-      <ul className="mb-6">
-        {cumplesFuturos.map((c, i) => (
-          <li key={i} className="mb-2">
-            <strong>{c.nombre}</strong> – {format(c.fecha, 'dd/MM', { locale: es })}
-          </li>
-        ))}
-        {cumplesFuturos.length === 0 && <li>No hay próximos cumpleaños cargados.</li>}
-      </ul>
-
-      <div className="flex gap-4">
-        <button onClick={abrirCalendario} className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md">
-          📆 Ver calendario
-        </button>
-        <button onClick={abrirWhatsApp} className="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md">
-          💬 Avisar a admin por WhatsApp
-        </button>
+        <div className="flex justify-center gap-4">
+          <button onClick={abrirCalendario} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow">
+            📆 Ver calendario
+          </button>
+          <button onClick={abrirWhatsApp} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow">
+            💬 Avisar a admin por WhatsApp
+          </button>
+        </div>
       </div>
     </main>
   )
