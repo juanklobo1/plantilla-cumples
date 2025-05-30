@@ -1,11 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { format, isToday, isPast, isWithinInterval, subDays, parseISO } from 'date-fns'
+import { format, isToday, isPast, isWithinInterval, subDays, parse } from 'date-fns'
 
 export default function Page() {
   const [datos, setDatos] = useState<any[]>([])
   const [grupo, setGrupo] = useState('Cumples del grupo')
+
+  const parseFecha = (fecha: string) => {
+    try {
+      return parse(fecha, 'dd/MM/yyyy', new Date())
+    } catch {
+      return new Date('2100-01-01') // Para ignorar fechas inválidas
+    }
+  }
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -39,18 +47,18 @@ export default function Page() {
   const anteayer = subDays(hoy, 2)
 
   const ordenarPorFecha = (a: any, b: any) => {
-    const fechaA = parseISO(a.fecha)
-    const fechaB = parseISO(b.fecha)
+    const fechaA = parseFecha(a.fecha)
+    const fechaB = parseFecha(b.fecha)
     return fechaA.getMonth() === fechaB.getMonth()
       ? fechaA.getDate() - fechaB.getDate()
       : fechaA.getMonth() - fechaB.getMonth()
   }
 
-  const cumpleañosHoy = datos.filter(d => isToday(parseISO(d.fecha)))
-  const cumpleañosAyer = datos.filter(d => isWithinInterval(parseISO(d.fecha), { start: anteayer, end: ayer }))
+  const cumpleañosHoy = datos.filter(d => isToday(parseFecha(d.fecha)))
+  const cumpleañosAyer = datos.filter(d => isWithinInterval(parseFecha(d.fecha), { start: anteayer, end: ayer }))
   const cumpleañosProximos = datos
     .filter(d => {
-      const fecha = parseISO(d.fecha)
+      const fecha = parseFecha(d.fecha)
       return !isPast(fecha) || isToday(fecha)
     })
     .sort(ordenarPorFecha)
@@ -65,7 +73,7 @@ export default function Page() {
             <h2>🎉 Cumpleaños de hoy</h2>
             {cumpleañosHoy.map((d, i) => (
               <div key={i} style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '6px', marginBottom: '10px' }}>
-                <strong>{d.nombre}</strong> ({format(parseISO(d.fecha), 'dd/MM')})
+                <strong>{d.nombre}</strong> ({format(parseFecha(d.fecha), 'dd/MM')})
                 {d.instagram && <div>Instagram: {d.instagram}</div>}
               </div>
             ))}
@@ -77,7 +85,7 @@ export default function Page() {
             <h2>📅 Cumples recientes</h2>
             {cumpleañosAyer.map((d, i) => (
               <div key={i} style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '6px', marginBottom: '10px' }}>
-                <strong>{d.nombre}</strong> ({format(parseISO(d.fecha), 'dd/MM')})
+                <strong>{d.nombre}</strong> ({format(parseFecha(d.fecha), 'dd/MM')})
               </div>
             ))}
           </div>
@@ -87,7 +95,7 @@ export default function Page() {
           <h2>🔜 Próximos cumpleaños</h2>
           {cumpleañosProximos.map((d, i) => (
             <div key={i} style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '6px', marginBottom: '10px' }}>
-              <strong>{d.nombre}</strong> ({format(parseISO(d.fecha), 'dd/MM')})
+              <strong>{d.nombre}</strong> ({format(parseFecha(d.fecha), 'dd/MM')})
             </div>
           ))}
         </div>
