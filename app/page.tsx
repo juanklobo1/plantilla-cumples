@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { format, isToday, isAfter, parse } from 'date-fns'
+import { format, isToday, isAfter } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 interface Cumple {
@@ -19,10 +19,12 @@ export default function Home() {
   const [grupo, setGrupo] = useState<string>('Cumples del grupo')
 
   const parseFecha = (texto: string): Date | null => {
-    const partes = texto.split('/')
+    const partes = texto?.trim().split('/')
     if (partes.length === 3) {
-      const [dia, mes, anio] = partes.map(Number)
-      return new Date(anio, mes - 1, dia)
+      const [dia, mes, anio] = partes.map(p => parseInt(p))
+      if (!isNaN(dia) && !isNaN(mes) && !isNaN(anio)) {
+        return new Date(anio, mes - 1, dia)
+      }
     }
     return null
   }
